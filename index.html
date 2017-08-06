@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>RPG</title>
+        <script src="phaser/build/phaser.min.js"></script>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+    Phaser.Game.prototype.addActor = function(params) {
+    	var actor = new Actor(params);
+      this.actors.push(actor);
+    }
+    
+    function Position(){
+    	this.x = 0;
+    	this.y = 0;
+    };
+    
+    Position.prototype.getX = function() {
+      return this.x;
+    }
+      
+    Position.prototype.getY = function() {
+      return this.y;
+    }
+
+    function Actor() {
+    	this.controller = '';
+    	this.name = '';
+    	this.position = new Position(); // grid position
+    	this.sprite; // contains pixel coords on tilemap
+    	
+    	if (arguments != undefined) {
+    		var params = arguments[0];
+    		this.name = params.name != undefined?params.name:'';
+    		this.controller = params.controller != undefined?params.controller:'AI';
+    		this.position.x = params.x != undefined?params.x:0;
+    		this.position.y = params.y != undefined?params.y:0;
+    		this.sprite = params.sprite != undefined?game.add.sprite(this.position.x * map.tileWidth,this.position.y * map.tileHeight, params.sprite):null;
+    	}
+    }
+    
+    Actor.prototype.move = function(d) {    	
+      console.log(this.position);
+      mX = this.position.x + directions[d].x,
+    	mY = this.position.y + directions[d].y, 
+    	      
+    	console.log('mX = ' + mX);
+    	console.log('mY = ' + mY);
+    	      	  
+    	console.log(map);
+    	  
+    	if (map.hasTile(mX,mY,'Walls')) {
+    	  console.log('Blocked');
+    	}
+    	else {
+    	 this.position.x = mX;
+    	 this.position.y = mY;
+    	 this.sprite.position.x+=directions[d].x * map.tileWidth;
+    	  this.sprite.position.y+=directions[d].y * map.tileHeight;
+    	  console.log(directions[d].label);
+    	}      
+    }
+    
+    var game;
+    var map;
+    var player;
+    
+    var floor_layer;
+    var wall_layer;
+    var enemies;
+    
+    var upKey;
+    var downKey;
+    var leftKey;
+    var rightKey;
+    
+    var directions = {
+      'N':{
+    	  'x':0,
+    	  'y':-1,
+    	  'label':'North'
+      },      
+      'E':{
+        'x':1,
+        'y':0,
+        'label':'East'
+      },
+      'S':{
+        'x':0,
+        'y':1,
+        'label':'South'
+      },
+      'W':{
+        'x':-1,
+        'y':0,
+        'label':'West'
+      },
+    };
+
+    window.onload = function() {
+
+        //  Note that this html file is set to pull down Phaser 2.5.0 from the JS Delivr CDN.
+        //  Although it will work fine with this tutorial, it's almost certainly not the most current version.
+        //  Be sure to replace it with an updated version before you start experimenting with adding your own code.
+
+        game = new Phaser.Game(320, 320, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        game.actors = [];
+       
+        function preload () {
+
+        	  game.load.tilemap('tilemap', 'test_map.json', null, Phaser.Tilemap.TILED_JSON);
+        	  game.load.image('tiles', 'tilesets/test_tiles.png');
+        	  game.load.image('player_sprite', 'assets/player.png');           
+        	  game.load.image('enemy_sprite', 'assets/enemy.png');
+
+
+        }
+        
+        function create () {
+
+        	 game.stage.backgroundColor = '#ff0000';
+
+        	 //  The 'mario' key here is the Loader key given in game.load.tilemap
+        	 map = game.add.tilemap('tilemap');
+
+        	 //  The first parameter is the tileset name, as specified in the Tiled map editor (and in the tilemap json file)
+        	 //  The second parameter maps this name to the Phaser.Cache key 'tiles'
+        	 map.addTilesetImage('test_tiles', 'tiles');
+        	    
+        	 //  Creates a layer from the World1 layer in the map data.
+        	 //  A Layer is effectively like a Phaser.Sprite, so is added to the display list.
+        	 floor_layer = map.createLayer('Floor');
+        	 wall_layer = map.createLayer('Walls');
+
+        	 //  This resizes the game world to match the layer dimensions
+        	 wall_layer.resizeWorld();
+           floor_layer.resizeWorld();
+           
+           
+           playerStart = findObjectsByType ('playerStart', map, 'Object Layer 1');
+           game.addActor({
+        	   name: 'Player 1',
+        	   controller: 'player',
+        	   x: playerStart[0].x / map.tileWidth,
+             y: playerStart[0].y / map.tileHeight,
+             sprite: "player_sprite"
+           });
+
+           enemies = findObjectsByType ('enemy', map, 'Object Layer 1');
+           for (var i = 0; i < enemies.length; i++) {
+             game.addActor({
+               name: 'Enemy ' + i,
+               x: enemies[i].x / map.tileWidth,
+               y: enemies[i].y / map.tileHeight,
+               sprite: "enemy_sprite"
+             });
+           }
+           //player = game.add.sprite(playerStart[0].x,playerStart[0].y, "player_sprite");
+           //game.camera.follow(actor.sprite);
+           //game.actors.push(actor);
+           
+           playerIndex = 0;
+
+           upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+           upKey.onDown.add(function(){game.actors[playerIndex].move('N')}, this);
+           
+           downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+           downKey.onDown.add(function(){game.actors[playerIndex].move('S')}, this);
+
+           
+           leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+           leftKey.onDown.add(function(){game.actors[playerIndex].move('W')}, this);
+
+           rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+           rightKey.onDown.add(function(){game.actors[playerIndex].move('E')}, this);
+
+        }
+        
+        function findObjectsByType (type, map, layer) {
+          var result = new Array();
+          for(var i = 0; i < map.objects[layer].length; i++) {
+        	  obj = map.objects[layer][i];
+        	  if (obj.type == type) {
+              obj.y -= map.tileHeight;
+        		  result.push(obj);
+        	  }
+          };
+          return result;
+        }
+        
+    };
+
+    
+    function update() {
+
+        //  For example this checks if the up or down keys are pressed and moves the camera accordingly.
+        /*
+        upKey.onUpCallback = function(){
+        	console.log('up');
+        	player.y+= map.tileHeight;
+        }
+        */
+        /*
+        else if (cursors.down.isDown)
+        {
+            player.y-= map.tileHeight;
+        }
+
+        if (cursors.left.isDown)
+        {
+            player.x-= map.tileWidth;
+
+        }
+        else if (cursors.right.isDown)
+        {
+            player.x+= map.tileWidth;
+        }
+        */
+
+    }
+
+    function moveActor(actor,d) {
+      actor.move(d);	
+    }
+    
+    function movePlayer(d) {
+      var currentPosition = {
+    		x:player.position.x / map.tileWidth,
+    		y:player.position.y / map.tileHeight
+      }
+
+      var newPosition = {
+    	  x:currentPosition.x + directions[d].x,
+        y:currentPosition.y + directions[d].y, 
+      }
+      
+      if (map.hasTile(newPosition.x,newPosition.y,'Walls')) {
+    	  console.log('Blocked');
+      }
+      else {
+    	  player.position.x+=directions[d].x * map.tileWidth;
+        player.position.y+=directions[d].y * map.tileHeight;
+        console.log(directions[d].label);
+      }      
+    }
+    </script>
+
+    </body>
+</html>
