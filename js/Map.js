@@ -61,7 +61,7 @@ Phaser.Tilemap.prototype.randomDungeon = function() {
 //	 //  This resizes the game world to match the layer dimensions
 //	 wall_layer.resizeWorld();
 //  floor_layer.resizeWorld();
-  this.layer0 = map.create('level1', 20, 20, 32, 32);        	  
+  this.layer0 = map.create('level1', 20, 20, 16, 16);        	  
   this.layer0.resizeWorld();
 
  var t; // tile index

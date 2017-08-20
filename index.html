@@ -55,15 +55,18 @@
         //  Although it will work fine with this tutorial, it's almost certainly not the most current version.
         //  Be sure to replace it with an updated version before you start experimenting with adding your own code.
 
-        game = new Phaser.Game(640, 640, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        game = new Phaser.Game(320, 320, Phaser.AUTO, '', { preload: preload, create: create, update: update });
         game.actors = [];
        
         function preload () {
 
         	  //game.load.tilemap('tilemap', 'test_map.json', null, Phaser.Tilemap.TILED_JSON);
-        	  game.load.image('tiles', 'tilesets/test_tiles_32.png');
-        	  game.load.image('player_sprite', 'assets/player_32.png');           
-            //game.load.image('player_sprite', 'tilesets/test_tiles_32.png');
+        	  game.load.image('tiles', 'tilesets/test_tiles_16.png');
+        	  //game.load.image('tiles', 'tilesets/test_tiles_32.png');
+              
+            game.load.spritesheet('sprite_sheet', 'tilesets/test_tiles_16.png', 16, 16, 5);
+        	  game.load.image('player_sprite', 'assets/player_16.png');           
+            //game.load.image('player_sprite', 'assets/player_32.png');           
         	  
         	  game.load.image('enemy_sprite', 'assets/enemy.png');
 
@@ -78,8 +81,7 @@
 
         	  //  The first parameter is the tileset name, as specified in the Tiled map editor (and in the tilemap json file)
         	  //  The second parameter maps this name to the Phaser.Cache key 'tiles'
-        	  map.addTilesetImage('tiles');
-            
+        	  map.addTilesetImage('tiles','tiles',16,16);
         	  map.randomDungeon();          
         	  
         	  pos = map.getOpenTile();
