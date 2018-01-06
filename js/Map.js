@@ -24,6 +24,10 @@ ObjectMap.prototype.addObject = function(x,y,obj) {
   this.contents[key].push(obj);  
 }
 
+Phaser.Tilemap.prototype.getKey = function(x,y) {
+  return x + ':' + y;	
+}
+
 Phaser.Tilemap.prototype.isWall = function(x,y) {
  console.log('checking x = ' + x + ' y = ' + y);
   //var t = this.layers[0].data[x][y].index;
@@ -36,8 +40,8 @@ Phaser.Tilemap.prototype.getOpenTile = function() {
   
   for (var y = 0; y < this.layers[0].height; y++) {
     for (var x = 0; x < this.layers[0].width; x++) {
-      //t = this.layers[0].data[x][y].index;
       t = this.getTile(x,y,0).index;
+      console.log('t = ' + t);
       if ( (this.floor_tiles.indexOf(t) != -1) && (this.objects.getObjects(x,y) == undefined) ){
     	  return({x:x,y:y});
       }     	
@@ -45,12 +49,34 @@ Phaser.Tilemap.prototype.getOpenTile = function() {
   }
 }
 
+Phaser.Tilemap.prototype.getRandomOpenTile = function() {
+  var t;	
+  var count = 0;
+  var x;
+  var y;
+  var key;
+  var tried = {};
+
+  // get the tile keys of each tile in the openTiles map
+  var keys = Object.keys(this.openTiles);
+  var numOpen = keys.length;
+  console.log(numOpen);
+  
+  if (numOpen > 0) {
+    key = keys[game.rnd.integerInRange(0, numOpen - 1)];
+    console.log('open key = ' + key);
+	return this.openTiles[key];
+  }
+
+}
+
 Phaser.Tilemap.prototype.randomDungeon = function() {
   this.floor_tiles = [1];
   this.wall_tiles = [2]
   this.wall_percent = 20;
   this.objects = new ObjectMap();
-  	    
+  this.openTiles = {};
+  var tile_key = null;  	    
 //	 //  Creates a layer from the World1 layer in the map data.
 //	 //  A Layer is effectively like a Phaser.Sprite, so is added to the display list.
 //	 floor_layer = map.createLayer('Floor');
@@ -75,6 +101,11 @@ Phaser.Tilemap.prototype.randomDungeon = function() {
 		 t = game.rnd.integerInRange(1, 100) <= this.wall_percent?2:1;
 	 }
      this.putTile(t, x,y,0);
+     
+     // if t is a floor tile, add it to the open tiles
+     if (this.wall_tiles.indexOf(t) == -1) {
+       this.openTiles[this.getKey(x,y)] = {x:x,y:y};    	 
+     }
    }
  }
  
