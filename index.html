@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <title>RPG</title>
+        <script type="text/javascript" src="js/pathfinding-browser.min.js"></script>
         <script type="text/javascript" src="js/phaser.min.js"></script>
         <script type="text/javascript" src="js/Map.js"></script>
         <script type="text/javascript" src="js/Actor.js"></script>
@@ -169,6 +170,13 @@
 
            num7Key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_7);
            num7Key.onDown.add(function(){game.actors[playerIndex].move('NW')}, this);
+           
+           // mouse clicks
+           game.input.onDown.add(function(pointer, event) { 
+        	   // get tile position
+        	   var pos = new Position(Math.floor(event.x / map.tileWidth),Math.floor(event.y / map.tileHeight));
+        	   console.log(pos);
+           });
     }
         
         function findObjectsByType (type, map, layer) {

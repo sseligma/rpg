@@ -29,7 +29,7 @@ Phaser.Tilemap.prototype.getKey = function(x,y) {
 }
 
 Phaser.Tilemap.prototype.isWall = function(x,y) {
- console.log('checking x = ' + x + ' y = ' + y);
+ //console.log('checking x = ' + x + ' y = ' + y);
   //var t = this.layers[0].data[x][y].index;
   var t = this.getTile(x,y,0).index;
   return this.wall_tiles.indexOf(t) != -1;	
@@ -70,7 +70,9 @@ Phaser.Tilemap.prototype.getRandomOpenTile = function() {
 
 }
 
-Phaser.Tilemap.prototype.randomDungeon = function() {
+Phaser.Tilemap.prototype.randomDungeon = function(width=20,height=20) {
+  this.pfGrid = new PF.Grid(width,height);
+  this.pathfinder = new PF.AStarFinder();
   this.floor_tiles = [1];
   this.wall_tiles = [2]
   this.wall_percent = 20;
@@ -87,8 +89,9 @@ Phaser.Tilemap.prototype.randomDungeon = function() {
 //	 //  This resizes the game world to match the layer dimensions
 //	 wall_layer.resizeWorld();
 //  floor_layer.resizeWorld();
-  this.layer0 = map.create('level1', 20, 20, 16, 16);        	  
+  this.layer0 = this.create('level1', width, height, 16, 16);
   this.layer0.resizeWorld();
+  this.debugLayer = this.createBlankLayer('debugLayer',width, height, 16, 16);
 
  var t; // tile index
 
@@ -101,6 +104,7 @@ Phaser.Tilemap.prototype.randomDungeon = function() {
 		 t = game.rnd.integerInRange(1, 100) <= this.wall_percent?2:1;
 	 }
      this.putTile(t, x,y,0);
+     this.pfGrid.setWalkableAt(x,y,this.wall_tiles.indexOf(t) == -1); // set walkable to false for wall tiles
      
      // if t is a floor tile, add it to the open tiles
      if (this.wall_tiles.indexOf(t) == -1) {
