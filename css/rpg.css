@@ -1,25 +1,12 @@
-#game {
+#game-gfx {
 	width:320px;
 	height:320px;
 	float:left;
 }
 
+
 #game-ui {
-	position:fixed;
-}
-
-#game-ui.intro {
-	width:100%;
-	height:100%;
-	background:#000;
-  color:#00ff00;
-  padding:10px 10px;
-  box-sizing:border-box;
-}
-
-#game-ui.play {
-  width:200px;
-  height:320px;
-  position:relative;
-  float:left;
+	float:left;
+	width:200px;
+	height:320px;
 }

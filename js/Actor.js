@@ -44,6 +44,7 @@
     
     
     function Actor() {
+    	this.scope;
     	this.controller = '';
     	this.name = '';
     	this.position = new Position(); // grid position
@@ -53,7 +54,7 @@
     	this.pathSprite = [];
     	this.debugPath = true;
     
-    	if (arguments != undefined) {
+    	if (arguments.length) {
     		var params = arguments[0];
     		this.name = params.name != undefined?params.name:'';
     		this.controller = params.controller != undefined?params.controller:'AI';
@@ -83,6 +84,8 @@
     	 this.sprite.position.x+=directions[d].x * map.tileWidth;
     	  this.sprite.position.y+=directions[d].y * map.tileHeight;
     	  console.log(directions[d].label);
+    	 
+    	  
     	}      
     }
     

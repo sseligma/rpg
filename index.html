@@ -5,31 +5,28 @@
         <title>RPG</title>
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/angular.min.js" ></script>
+        <script type="text/javascript" src="js/angular-ui-router.min.js"></script>
         <script type="text/javascript" src="js/angular-route.min.js" ></script>
         <script type="text/javascript" src="js/angular-resource.min.js" ></script>
         <script type="text/javascript" src="js/ui-bootstrap-tpls-2.5.0.js" ></script>        
         <script type="text/javascript" src="js/rpgAngular.js" ></script>                
         <script type="text/javascript" src="js/pathfinding-browser.min.js"></script>
         <script type="text/javascript" src="js/phaser.min.js"></script>
+        <script type="text/javascript" src="js/directions.js"></script>
         <script type="text/javascript" src="js/Map.js"></script>
         <script type="text/javascript" src="js/Actor.js"></script>
         <script type="text/javascript" src="js/Rpg.js"></script>
-        <script type="text/javascript" src="js/states/boot.js"></script>
-        <script type="text/javascript" src="js/states/menu.js"></script>
-        <script type="text/javascript" src="js/states/play.js"></script>
-        <script type="text/javascript" src="js/game.js"></script>
+        <!-- <script type="text/javascript" src="js/game.js"></script> -->
         <link rel="stylesheet" href="css/rpg.css" media="all">
         
     </head>
     
     <body data-ng-app="rpgApp">
-      <div id="game"></div>
+      <!-- <div id="game"></div>-->
       
       
-      <div id="game-ui" ng-app="rpgApp">
-        <div ng-controller="RpgController">
-          <ng-include src="getTemplate()"></ng-include> 
-        </div>
+      <div id="game" ng-app="rpgApp">
+        <div data-ng-view class="{{viewClass}}"></div>
       </div>
     </body>
     

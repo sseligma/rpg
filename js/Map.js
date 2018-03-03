@@ -24,6 +24,10 @@ ObjectMap.prototype.addObject = function(x,y,obj) {
   this.contents[key].push(obj);  
 }
 
+Phaser.Tilemap.prototype.setScope = function($scope) {
+  this.$scope = $scope;
+}
+
 Phaser.Tilemap.prototype.getKey = function(x,y) {
   return x + ':' + y;	
 }
