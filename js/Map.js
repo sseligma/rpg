@@ -1,5 +1,5 @@
 function ObjectMap() {
-  // contents is a hashmap of position keys to object arrays
+  // contents is a hashmap of position keys to object a rrays
   // the position key is in the form if <x coord>:<y coord>
   this.contents = {};
 }

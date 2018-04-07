@@ -10,3 +10,11 @@
 	width:200px;
 	height:320px;
 }
+
+#game-map {
+	position:relative;
+}
+
+#game-map .map-layer {
+	position:absolute;
+}

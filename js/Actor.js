@@ -83,7 +83,7 @@
     	 this.position.y = mY;
     	 this.sprite.position.x+=directions[d].x * map.tileWidth;
     	  this.sprite.position.y+=directions[d].y * map.tileHeight;
-    	  console.log(directions[d].label);
+    	  console.log(this.name + ' moves ' + directions[d].label);
     	 
     	  
     	}      

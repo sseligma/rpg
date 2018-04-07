@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Canvas</title>
+    </head>
+    
+    <body>
+      <div id="game-gfx">
+        <canvas id="layer-0" width="320" height="320" ></canvas>
+        <canvas id="sprite-layer" width="320" height="320" ></canvas>
+      </div>
+    </body>
+    <style type="text/css">
+      #game-gfx {
+        position:relative;
+      }
+      
+      #layer-0 {
+        position:absolute;
+      }
+      
+      #sprite-layer {
+        position:absolute;
+      }
+      
+    </style>
+    <script type="text/javascript">
+      var ctx_l_0 = document.getElementById('layer-0').getContext('2d');
+      var ctx_s = document.getElementById('sprite-layer').getContext('2d');
+      
+      var tiles = new Image();
+      tiles.src = "tilesets/test_tiles_16.png";
+      for (var i = 0; i < 10; i++) {
+    	  t = Math.floor((Math.random() * 5) );
+        tx = t *    16;
+        x = 0;
+        y = i * 16;
+    	  ctx_l_0.drawImage(tiles,tx, 0, 16, 16,x, y,16,16);
+      }
+      
+      // rnd player sprite
+      x = 16 * Math.floor((Math.random() * 20));
+    	y = 16 * Math.floor((Math.random() * 20));
+      ctx_s.drawImage(tiles,(4 * 16), 0, 16, 16,x, y,16,16);
+    </script>
+    
+</html>
