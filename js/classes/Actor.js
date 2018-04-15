@@ -1,29 +1,3 @@
-    function Position(){
-    	this.type = 'Position';
-    	this.x = 0;
-    	this.y = 0;
-    	
-    	if (arguments.length == 2) {
-    	  this.x = arguments[0];
-    	  this.y = arguments[1];
-    	}
-    };
-    
-    Position.prototype.getX = function() {
-      return this.x;
-    }
-      
-    Position.prototype.getY = function() {
-      return this.y;
-    }
-
-    Position.prototype.getKey = function() {
-      return 'x_' + this.x + '_' + 'y_' + this.y;
-    }
-    
-    Position.prototype.equals = function(obj) {
-      return this.x == obj.x && this.y == obj.y;
-    }
         
     function Path() {
       if (arguments.length == 4) {
@@ -61,7 +35,7 @@
     		this.map = params.map;
     		this.position.x = params.x != undefined?params.x:0;
     		this.position.y = params.y != undefined?params.y:0;
-    		this.sprite = params.sprite != undefined?game.add.sprite(this.position.x * map.tileWidth,this.position.y * map.tileHeight, params.sprite):null;
+    		this.sprite = params.sprite != undefined?params.sprite:null
     	}
     }
     
@@ -75,17 +49,14 @@
     	      	  
     	//console.log(map);
     	  
-    	if (map.isWall(mX,mY)) {
+    	if (this.map.isWall(mX,mY)) {
     	  console.log('Blocked');
     	}
     	else {
     	 this.position.x = mX;
     	 this.position.y = mY;
-    	 this.sprite.position.x+=directions[d].x * map.tileWidth;
-    	  this.sprite.position.y+=directions[d].y * map.tileHeight;
-    	  console.log(this.name + ' moves ' + directions[d].label);
-    	 
-    	  
+    	 this.sprite.move(this.position);
+    	 console.log(this.name + ' moves ' + directions[d].label);
     	}      
     }
     
@@ -100,11 +71,21 @@
       }
       
       this.intendedPath = this.map.pathfinder.findPath(pStart.x,pStart.y,pEnd.x,pEnd.y,grid);
+      this.intendedPath.splice(0,1);
       if (this.debugPath) {
-        this.hidePath();
-        this.showPath();
+        //this.hidePath();
+        //this.showPath();
       }
       console.log(this.intendedPath);
+    }
+    
+    Actor.prototype.moveTowards = function(pEnd) {
+      this.findShortestPath(pEnd);
+      console.log(this.intendedPath);
+      if (this.intendedPath.length > 0) {
+        this.position = new Position(this.intendedPath[0][0],this.intendedPath[0][1]);
+        this.sprite.move(this.position);
+      }
     }
     
 //    Actor.prototype.findShortestPath = function(pEnd,pStart = null,openList = {},closedList = {},numTries = 0) {

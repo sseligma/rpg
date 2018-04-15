@@ -15,6 +15,32 @@ function Tile() {
   }
 }
 
+function ObjectMap() {
+  // contents is a hashmap of position keys to object a rrays
+  // the position key is in the form if <x coord>:<y coord>
+  this.contents = {};
+}
+
+ObjectMap.prototype.getMapKey = function(x,y) {
+  return x + ':' + y;
+}
+
+ObjectMap.prototype.getObjects = function(x,y) {
+  var key = this.getMapKey(x,y);
+  if (this.contents[key] != undefined) {
+	return this.contents[key];  
+  }
+}
+
+ObjectMap.prototype.addObject = function(x,y,obj) {
+  var key = this.getMapKey(x,y);
+  if (this.contents[key] == undefined) {
+	this.contents[key] = [];
+  }
+	  
+  this.contents[key].push(obj);  
+}
+
 function TilemapLayer() {
   this.id;
   this.tiles = [];
@@ -57,6 +83,11 @@ TilemapLayer.prototype.drawTile = function(t,img) {
   this.ctx.drawImage(img, sx, sy, this.parentMap.tileWidth, this.parentMap.tileHeight, tX,tY,this.parentMap.tileWidth,this.parentMap.tileHeight);
 }
 
+TilemapLayer.prototype.getTileAt = function(x,y) {
+  var t = (y * this.parentMap.width) + x;
+  return this.tiles[t];
+}
+
 function Tilemap() {
   this.height = 0;
   this.width = 0;
@@ -92,6 +123,10 @@ function Tilemap() {
   }
 }
 
+Tilemap.prototype.getKey = function(x,y) {
+  return x + ':' + y;	
+}
+
 Tilemap.prototype.addLayer = function(id,tileSrcId = null) {
   // arg 0 = layer id
   // arg 1 = optional tileset img id
@@ -101,10 +136,13 @@ Tilemap.prototype.addLayer = function(id,tileSrcId = null) {
   this.layerIdMap[arguments[0]] = this.layers.length - 1;  
 }
 
+Tilemap.prototype.getLayer = function(id) {
+  return this.layers[this.layerIdMap[id]];
+}
 
-Tilemap.prototype.addTileSrc = function(id) {
+Tilemap.prototype.addTileSrc = function(id,info = {}) {
   var img = this.assets.get(id);
-  this.tileSrc.push({'img':img,'tilesWide':img.width / this.tileWidth,'info':{}});
+  this.tileSrc.push({'img':img,'tilesWide':img.width / this.tileWidth,'info':info});
   this.tileSrcIdMap[id] = this.tileSrc.length - 1;
 }
 
@@ -166,11 +204,49 @@ Tilemap.prototype.randomMap = function() {
      // if t is a floor tile, add it to the open tiles
      if (this.wall_tiles.indexOf(t) == -1) {
        this.openTiles[x + '_' + y] = {x:x,y:y};    	 
-     }
+     }     
+     this.pfGrid.setWalkableAt(x,y,this.wall_tiles.indexOf(t) == -1); // set walkable to false for wall tiles
+     
    }
  }
   
 }
+
+Tilemap.prototype.getRandomOpenTile = function() {
+  var t;	
+  var count = 0;
+  var x;
+  var y;
+  var key;
+  var tried = {};
+
+  // get the tile keys of each tile in the openTiles map
+  var keys = Object.keys(this.openTiles);
+  var numOpen = keys.length;
+  console.log(numOpen);
+
+  if (numOpen > 0) {
+    key = keys[rnd((numOpen - 1),0)];
+    console.log('open key = ' + key);
+    return this.openTiles[key];
+  }
+
+}
+
+Tilemap.prototype.isWall = function(x,y) {
+  	
+  var t;
+  for(var i = 0; i < this.layers.length; i++) {
+    t = this.layers[0].getTileAt(x,y);
+    console.log(t);
+    console.log(this.wall_tiles);
+    if (this.wall_tiles.indexOf(t.tileIndex) != -1) {
+    	return true;
+    }		  
+  }
+  return false;
+}
+
 
 //function ObjectMap() {
 //  // contents is a hashmap of position keys to object arrays

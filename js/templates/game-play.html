@@ -1,6 +1,6 @@
 <h1>{{title}}</h1>
 {{test}}
-<div id="game-map">
+<div id="game-map" ng-keypress="move($event)">
   <canvas class="map-layer" ng-repeat="(key, layer) in map.layers" id="{{layer.id}}" width="{{map.canvasWidth}}" height="{{map.canvasHeight}}" ></canvas>
 </div>
 <div id="char-info"></div>

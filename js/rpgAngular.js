@@ -1,54 +1,5 @@
 var app = angular.module('rpgApp', ['ui.router','ngRoute','ui.bootstrap']);
 
-
-/*
-app.config(function($routeProvider) {
-    $routeProvider
-    .when('/', {templateUrl: 'js/templates/home.html', controller: 'HomeCtrl'})
-    .when('/game', {templateUrl: 'js/templates/game.html', controller: 'GameCtrl'})
-    .when('/new_game', {templateUrl: 'js/templates/new_game.html', controller: 'NameGameCtrl'})
-    .when('/load_game', {templateUrl: 'js/templates/load_game.html', controller: 'LoadGameCtrl'})
-});
-*/
-
-app.factory('state_svc', function($state) {
-	  this.$state = $state;
-	  return {
-	    setState:function(s){
-	      console.log(s);
-	      $state.go(s);
-		}
-	  }
-	});
-
-app.factory('character_svc', function($rootScope) {
-  var character = new Actor();
-
-  return {
-	setName:function(text){
-	  character.name = text;
-    },
-		          
-	get:function(attr) {
-	  return character[attr];	  
-	},
-
-	set:function(attr,value) {
-	  character[attr] = value;  
-	},
-
-	getCharacter:function(){
-	  return character;
-	},
-	    
-	setCharacter:function(_character){
-	  character = _character;
-    }
-
-  }
-
-});
-
 app.factory('game_svc', function(character_svc,$rootScope) {
 	  character = character_svc;
 	  game = new Phaser.Game(320, 320, Phaser.AUTO, 'game-gfx', { preload: preload, create: create});
