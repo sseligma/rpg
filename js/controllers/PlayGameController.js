@@ -1,14 +1,6 @@
-app.controller("PlayGameContrl", function($scope,$state,state_svc,character_svc,preloader,asset_svc) {
+app.controller("PlayGameContrl", function($scope,$state,state_svc,character_svc,preloader,asset_svc,game_svc) {
+  $scope.game_svc = game_svc;
   
-  $scope.addActor = function(params) {
-    var actor = new Actor(params);
-    actor.sprite.draw();
-	$scope.actors.push(actor);
-	var key = $scope.map.getKey(params.x,params.y);
-	delete $scope.map.openTiles[key];
-	
-  }
-
   $scope.asset_svc = asset_svc;
   
   $scope.character = character_svc.getCharacter();
@@ -18,39 +10,39 @@ app.controller("PlayGameContrl", function($scope,$state,state_svc,character_svc,
 
   console.log(preloader);
 
-  $scope.map = new Tilemap({'height':20,'width':20,'tileHeight':16,'tileWidth':16,'assets':asset_svc});
-  $scope.map.addTileSrc('test-tiles',{'ground':[1],'wall':[2]});
-  $scope.map.addLayer('layer-0','test-tiles');
-  $scope.map.addLayer('sprite-layer');
-  $scope.map.randomMap('layer-0');
-  
-  $scope.actors = [];
+  $scope.game_svc.setMap(new Tilemap({'height':20,'width':20,'tileHeight':16,'tileWidth':16,'assets':asset_svc}));
 
-  /* TODO - move map and actor generation to a game_svc */  
-  $scope.playerIndex = 0;
+  $scope.game_svc.getMap().addTileSrc('test-tiles',{'ground':[1],'wall':[2]});
+  $scope.game_svc.getMap().addLayer('layer-0','test-tiles');
+  $scope.game_svc.getMap().addLayer('sprite-layer');
+  $scope.game_svc.getMap().randomMap('layer-0');
+  
+
   
   angular.element(document).ready(function () {
-	 for (i = 0; i < $scope.map.layers.length; i++) {
-	    $scope.map.layers[i].ctx = document.getElementById($scope.map.layers[i].id).getContext('2d');	
-	    $scope.map.drawMap('test-tiles');
+	 console.log($scope.game_svc.getMap());
+	 for (i = 0; i < $scope.game_svc.getMap().layers.length; i++) {
+		  console.log($scope.game_svc.getMap().layers[i].id);
+
+	    $scope.game_svc.getMap().layers[i].ctx = document.getElementById($scope.game_svc.getMap().layers[i].id).getContext('2d');	
+	    $scope.game_svc.getMap().drawMap('test-tiles');
 	 }
 	 
 	 // Actors
-	 pos = $scope.map.getRandomOpenTile();
+	 pos = $scope.game_svc.getMap().getRandomOpenTile();
 	 player_sprite = new Sprite({
 	   img:asset_svc.get('test-tiles'),
 	   width:16,
 	   height:16,
 	   frameIndex:4,
-	   ctx:$scope.map.getLayer('sprite-layer').ctx,
+	   ctx:$scope.game_svc.getMap().getLayer('sprite-layer').ctx,
 	   position:pos
 	 });
 	 
 	 // Player
-	 $scope.addActor({
+	 game_svc.addActor({
 	   name: $scope.character.name,
 	   controller: 'player',
-	   map:$scope.map,
 	   x: pos.x,
 	   y: pos.y,
 	   sprite: player_sprite
