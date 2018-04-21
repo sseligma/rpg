@@ -3,4 +3,6 @@
 <div id="game-map" ng-keypress="move($event)">
   <canvas class="map-layer" ng-repeat="(key, layer) in game_svc.getMap().layers" id="{{layer.id}}" width="{{game_svc.getMap().canvasWidth}}" height="{{game_svc.getMap().canvasHeight}}" ></canvas>
 </div>
-<div id="char-info"></div>
+<div id="char-info">
+  <div id="action-log">{{actionLog}}</div>
+</div>

@@ -2,7 +2,29 @@ app.factory('game_svc', function($rootScope) {
   var actors = [];
   var map;
   var playerIndex = 0;
+  var gameOver = false;
   
+  $rootScope.$on('keydown', function (evt, obj, key) {
+    console.log(key);
+    switch(key) {
+      case 'ArrowLeft':
+        actors[playerIndex].move('W');
+      break;
+      
+      case 'ArrowUp':
+        actors[playerIndex].move('N');
+      break;
+
+      case 'ArrowRight':
+        actors[playerIndex].move('E');
+      break;
+
+      case 'ArrowDown':
+        actors[playerIndex].move('S');
+      break;
+
+    }
+  });
 
   return {
 	addActor:function(params) {

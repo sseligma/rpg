@@ -27,15 +27,18 @@
     	this.intendedPath = [];
     	this.pathSprite = [];
     	this.debugPath = true;
+    	this.health = 0;
     
     	if (arguments.length) {
     		var params = arguments[0];
     		this.name = params.name != undefined?params.name:'';
     		this.controller = params.controller != undefined?params.controller:'AI';
-    		this.map = params.map;
     		this.position.x = params.x != undefined?params.x:0;
     		this.position.y = params.y != undefined?params.y:0;
+    		this.map = params.map;
+    		this.map.actorMap.add(params.x,params.y,this);
     		this.sprite = params.sprite != undefined?params.sprite:null
+    		this.health = params.health != undefined?params.health:0;
     	}
     }
     
@@ -52,9 +55,15 @@
     	if (this.map.isWall(mX,mY)) {
     	  console.log('Blocked');
     	}
+    	else if (this.map.hasActor(mX,mY)) {
+    		console.log('attack');
+    	}
     	else {
+    	 this.map.actorMap.remove(this.position.x,this.position.y);
     	 this.position.x = mX;
     	 this.position.y = mY;
+    	 this.map.actorMap.add(this.position.x,this.position.y,this);
+
     	 this.sprite.move(this.position);
     	 console.log(this.name + ' moves ' + directions[d].label);
     	}      

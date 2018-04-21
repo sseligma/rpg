@@ -16,7 +16,7 @@ ObjectMap.prototype.getObjects = function(x,y) {
 }
 
 ObjectMap.prototype.addObject = function(x,y,obj) {
-  var key = this.getMapKey(x,y);
+  var key = getMapKey(x,y);
   if (this.contents[key] == undefined) {
     this.contents[key] = [];
   }

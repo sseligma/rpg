@@ -1,5 +1,20 @@
 var app = angular.module('rpgApp', ['ui.router','ngRoute','ui.bootstrap']);
 
+app.directive('keydownEvents',
+
+		function ($document, $rootScope) {
+		    return {
+		        restrict: 'A',
+		        link: function () {
+		            console.log('linked');
+		            $document.bind('keydown', function (e) {
+		            	console.log(e.originalEvent.code);
+		                $rootScope.$broadcast('keydown', e, e.originalEvent.code);
+		            });
+		        }
+		    }
+		});
+
 app.config(function($stateProvider,$urlRouterProvider) {
 	
     $urlRouterProvider.otherwise('/');

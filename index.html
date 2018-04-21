@@ -31,8 +31,11 @@
         
     </head>
     
-    <body data-ng-app="rpgApp">
-        <div ui-view ></div>
+    <body data-ng-app="rpgApp"  ng-keyup="keyup($event)">
+    <div keydown-events>
+        <div ui-view >
+        </div>
+        </div>
     </body>
     
 </html>

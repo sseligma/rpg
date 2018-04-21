@@ -21,24 +21,38 @@ function ObjectMap() {
   this.contents = {};
 }
 
-ObjectMap.prototype.getMapKey = function(x,y) {
-  return x + ':' + y;
-}
-
 ObjectMap.prototype.getObjects = function(x,y) {
-  var key = this.getMapKey(x,y);
+  var key = getMapKey(x,y);
   if (this.contents[key] != undefined) {
 	return this.contents[key];  
   }
 }
 
 ObjectMap.prototype.addObject = function(x,y,obj) {
-  var key = this.getMapKey(x,y);
+  var key = getMapKey(x,y);
   if (this.contents[key] == undefined) {
 	this.contents[key] = [];
   }
 	  
   this.contents[key].push(obj);  
+}
+
+function ActorMap() {
+  // actors is a hashmap of position keys to actors
+  // the position key is in the form if <x coord>:<y coord>
+  this.actors = {};
+}
+
+ActorMap.prototype.add = function(x,y,actor) {
+  this.actors[getMapKey(x,y)] = actor;
+}
+
+ActorMap.prototype.get = function(x,y) {
+  return this.actors[getMapKey(x,y)];
+}
+
+ActorMap.prototype.remove = function(x,y) {
+  this.actors[getMapKey(x,y)] = undefined;
 }
 
 function TilemapLayer() {
@@ -96,6 +110,8 @@ function Tilemap() {
   this.canvasHeight = 0;
   this.canvasWidth = 0;
   this.assets;
+  this.objects = new ObjectMap();
+  this.actorMap = new ActorMap();
   
   this.layers = []; // array of TilemapLayer objects
   this.layerIdMap = {}; // hashmap of layer ID to index
@@ -184,7 +200,6 @@ Tilemap.prototype.randomMap = function() {
   this.floor_tiles = [1];
   this.wall_tiles = [2]
   this.wall_percent = 20;
-  this.objects = new ObjectMap();
   this.openTiles = {};
   var tile_key = null;  	    
  
@@ -247,6 +262,9 @@ Tilemap.prototype.isWall = function(x,y) {
   return false;
 }
 
+Tilemap.prototype.hasActor = function(x,y) {
+  return this.actorMap.get(x,y) != undefined;
+}
 
 //function ObjectMap() {
 //  // contents is a hashmap of position keys to object arrays
